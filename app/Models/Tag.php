@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Tag extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
     ];
+
     public function contact(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class);

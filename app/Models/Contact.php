@@ -22,7 +22,8 @@ class Contact extends Model
         'building',
         'detail',
     ];
-        public function getPriorityLabelAttribute(): string
+
+    public function getPriorityLabelAttribute(): string
     {
         return match ($this->priority) {
             1 => '男性',
@@ -30,10 +31,12 @@ class Contact extends Model
             3 => 'その他',
         };
     }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
