@@ -12,6 +12,7 @@ class Contact extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'first_name',
         'last_name',
         'gender',
@@ -26,7 +27,7 @@ class Contact extends Model
         return match ($this->priority) {
             1 => '男性',
             2 => '女性',
-            default => 'その他',
+            3 => 'その他',
         };
     }
     public function category(): BelongsTo
