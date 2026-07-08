@@ -7,35 +7,47 @@ COACHTECH お問い合わせフォーム
 ## ER図
 ```mermaid
 erDiagram
-    CATEGORY ||--o{ CONTACT : hasMany
-    CONTACT }o--o{ TAG : belongsToMany
+    categories ||--o{ contacts : hasMany
 
-    CATEGORY {
+    categories {
         bigint id PK
-        string name
+        varchar(255) content
+        timestamp created_at
+        timestamp updated_at
     }
 
-    CONTACT {
+    contacts {
         bigint id PK
         bigint category_id FK
-        string name
-        string email
-        string subject
-        text message
+        varchar(255) first_name
+        varchar(255) last_name
+        tinyint gender
+        varchar(255) email
+        varchar(11) tel
+        varchar(255) address
+        varchar(255) building
+        varchar(120) detail
+        timestamp created_at
+        timestamp updated_at
     }
 
-    TAG {
+    tags {
         bigint id PK
-        string name
+        varchar(50) name
+        timestamp created_at
+        timestamp updated_at
     }
 
-    CONTACT_TAG {
+    contact_tag {
+        bigint id PK
         bigint contact_id FK
         bigint tag_id FK
+        timestamp created_at
+        timestamp updated_at
     }
 
-    CONTACT ||--o{ CONTACT_TAG : has
-    TAG ||--o{ CONTACT_TAG : has
+    contacts ||--o{ contact_tag : has
+    tags ||--o{ contact_tag : has
 ```
 
 ## 環境構築手順
