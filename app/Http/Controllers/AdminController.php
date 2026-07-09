@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Contact;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -15,8 +16,9 @@ class AdminController extends Controller
     {
         $categories = Category::all();
         $contacts = Contact::paginate(7);
+        $tags = Tag::all();
 
-        return view('admin.index', compact('contacts', 'categories'));
+        return view('admin.index', compact('contacts', 'categories', 'tags'));
     }
 
     /**
