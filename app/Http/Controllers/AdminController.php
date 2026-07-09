@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexContactRequest;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Tag;
@@ -12,11 +13,15 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexContactRequest $request)
     {
         $categories = Category::all();
-        $contacts = Contact::paginate(7);
         $tags = Tag::all();
+
+        $contacts = Contact::with(['category', 'tags'])
+            ->filter($request->validated())
+            ->paginate(7)
+            ->withQueryString();
 
         return view('admin.index', compact('contacts', 'categories', 'tags'));
     }
