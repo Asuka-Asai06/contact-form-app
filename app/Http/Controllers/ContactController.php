@@ -21,7 +21,7 @@ class ContactController extends Controller
     {
         Contact::create($request->validated());
 
-        return redirect()->route('contact.thanks');
+        return redirect()->route('contacts.thanks');
     }
 
     public function confirm(StoreContactRequest $request)
