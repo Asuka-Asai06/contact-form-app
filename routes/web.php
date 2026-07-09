@@ -5,10 +5,10 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
-Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
-Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
+Route::get('/', [ContactController::class, 'index'])->name('contacts.index');
+Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contacts.confirm');
+Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
+Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contacts.thanks');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
