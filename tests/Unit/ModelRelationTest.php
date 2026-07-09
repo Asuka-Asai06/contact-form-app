@@ -2,15 +2,116 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Tag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ModelRelationTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     */
-    public function test_example(): void
+    use RefreshDatabase;
+
+    private Category $category;
+
+    protected function setUp(): void
     {
-        $this->assertTrue(true);
+        parent::setUp();
+
+        $this->category = Category::create([
+            'content' => '商品のお届けについて',
+        ]);
+    }
+
+    public function test_カテゴリから複数のお問い合わせを取得できる()
+    {
+        Contact::factory()
+            ->count(3)
+            ->create([
+                'category_id' => $this->category->id,
+            ]);
+
+        $contacts = $this->category->contacts;
+
+        $this->assertCount(3, $contacts);
+
+        foreach ($contacts as $contact) {
+            $this->assertEquals(
+                $this->category->id,
+                $contact->category_id
+            );
+        }
+    }
+
+    public function test_お問い合わせがカテゴリに属している()
+    {
+        $contact = Contact::factory()->create([
+            'category_id' => $this->category->id,
+        ]);
+
+        $this->assertEquals(
+            $this->category->id,
+            $contact->category->id
+        );
+
+        $this->assertEquals(
+            $this->category->content,
+            $contact->category->content
+        );
+    }
+
+    public function test_お問い合わせに複数のタグを関連付けられる()
+    {
+        $contact = Contact::factory()->create([
+            'category_id' => $this->category->id,
+        ]);
+
+        $tags = Tag::factory()
+            ->count(3)
+            ->create();
+
+        $contact->tags()->sync($tags->pluck('id'));
+
+        $contact->refresh();
+
+        $contactTags = $contact->tags;
+
+        $this->assertCount(3, $contactTags);
+
+        foreach ($tags as $tag) {
+            $this->assertTrue(
+                $contactTags->contains($tag)
+            );
+        }
+    }
+
+    public function test_タグから複数のお問い合わせを取得できる()
+    {
+        $tag = Tag::factory()->create();
+
+        $contacts = Contact::factory()
+            ->count(3)
+            ->create([
+                'category_id' => Category::create([
+                    'content' => '商品のお届けについて',
+                ])->id,
+            ]);
+
+        foreach ($contacts as $contact) {
+            $contact->tags()->sync([
+                $tag->id,
+            ]);
+        }
+
+        $tag->refresh();
+        $tagContacts = $tag->contacts;
+
+        $this->assertCount(3, $tagContacts);
+
+        foreach ($contacts as $contact) {
+            $this->assertTrue(
+                $tagContacts->contains($contact)
+            );
+        }
     }
 }
