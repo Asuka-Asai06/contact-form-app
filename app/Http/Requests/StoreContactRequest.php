@@ -32,6 +32,9 @@ class StoreContactRequest extends FormRequest
             'building' => 'nullable|string|max:255',
             'category_id' => 'required|integer|exists:categories,id',
             'detail' => 'required|string|max:120',
+
+            'tags' => 'nullable|array',
+            'tags.*' => 'integer|exists:tags,id',
         ];
     }
 

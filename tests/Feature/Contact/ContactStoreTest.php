@@ -4,6 +4,7 @@ namespace Tests\Feature\Contact;
 
 use App\Models\Category;
 use App\Models\Contact;
+use App\Models\Tag;
 use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,43 +27,51 @@ class ContactStoreTest extends TestCase
         );
     }
 
-    public function test_問い合わせ確認ページを表示できる()
+    public function test_問い合わせ送信時に問い合わせとタグが保存される()
     {
-        $data = [
+        $tag = Tag::factory()->create();
+
+        $contact = Contact::factory()->make([
             'category_id' => $this->category->id,
-            'first_name' => '山田',
-            'last_name' => '太郎',
-            'gender' => '1',
-            'email' => 'yamada@example.com',
-            'tel' => '09012345678',
-            'address' => '東京都大田区',
-            'building' => 'サンプルビル101',
-            'detail' => '商品の配送について質問があります',
-        ];
+        ]);
+
+        $data = array_merge(
+            $contact->toArray(),
+            [
+                'tags' => [$tag->id],
+            ]
+        );
 
         $response = $this->post(
-            route('contacts.confirm'),
+            route('contacts.store'),
             $data
         );
 
-        $response->assertStatus(200);
+        $response->assertRedirect();
 
-        $response->assertViewIs('contact.confirm');
-        $contactInformation = [
-            '山田',
-            '太郎',
-            '男性',
-            'yamada@example.com',
-            '09012345678',
-            '東京都大田区',
-            'サンプルビル101',
-            '商品の配送について質問があります',
-            '商品のお届けについて',
-        ];
+        $this->assertDatabaseHas('contacts', [
+            'category_id' => $contact->category_id,
+            'first_name' => $contact->first_name,
+            'last_name' => $contact->last_name,
+            'gender' => $contact->gender,
+            'email' => $contact->email,
+            'tel' => $contact->tel,
+            'address' => $contact->address,
+            'building' => $contact->building,
+            'detail' => $contact->detail,
+        ]);
 
-        foreach ($contactInformation as $text) {
-            $response->assertSee($text);
-        }
+        $savedContact = Contact::firstWhere(
+            'email',
+            $contact->email
+        );
+
+        $this->assertNotNull($savedContact);
+
+        $this->assertDatabaseHas('contact_tag', [
+            'contact_id' => $savedContact->id,
+            'tag_id' => $tag->id,
+        ]);
     }
 
     public function test_姓が255文字を超える場合はバリデーションエラーになる()

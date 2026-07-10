@@ -4,6 +4,7 @@ namespace Tests\Feature\Contact;
 
 use App\Models\Category;
 use App\Models\Tag;
+use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -11,11 +12,22 @@ class ContactIndexTest extends TestCase
 {
     use RefreshDatabase;
 
+    private Category $category;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(CategorySeeder::class);
+
+        $this->category = Category::firstWhere(
+            'content',
+            '商品のお届けについて'
+        );
+    }
+
     public function test_お問い合わせフォームが表示される()
     {
-        Category::create([
-            'content' => '商品のお届けについて',
-        ]);
 
         Tag::create([
             'name' => '質問',
@@ -29,6 +41,46 @@ class ContactIndexTest extends TestCase
         $response->assertViewHas('tags');
         $response->assertSee('商品のお届けについて');
         $response->assertSee('質問');
+    }
+
+    public function test_問い合わせ確認ページを表示できる()
+    {
+
+        $data = [
+            'category_id' => $this->category->id,
+            'first_name' => '山田',
+            'last_name' => '太郎',
+            'gender' => '1',
+            'email' => 'yamada@example.com',
+            'tel' => '09012345678',
+            'address' => '東京都大田区',
+            'building' => 'サンプルビル101',
+            'detail' => '商品の配送について質問があります',
+        ];
+
+        $response = $this->post(
+            route('contacts.confirm'),
+            $data
+        );
+
+        $response->assertStatus(200);
+
+        $response->assertViewIs('contact.confirm');
+        $contactInformation = [
+            '山田',
+            '太郎',
+            '男性',
+            'yamada@example.com',
+            '09012345678',
+            '東京都大田区',
+            'サンプルビル101',
+            '商品の配送について質問があります',
+            '商品のお届けについて',
+        ];
+
+        foreach ($contactInformation as $text) {
+            $response->assertSee($text);
+        }
     }
 
     public function test_サンクスページが表示される()

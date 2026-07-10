@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Tag;
+use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
@@ -19,7 +20,18 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request)
     {
-        Contact::create($request->validated());
+        DB::transaction(function () use ($request) {
+
+            $validated = $request->validated();
+
+            $contact = Contact::create(
+                collect($validated)->except('tags')->all()
+            );
+
+            $contact->tags()->sync(
+                $validated['tags'] ?? []
+            );
+        });
 
         return redirect()->route('contacts.thanks');
     }
