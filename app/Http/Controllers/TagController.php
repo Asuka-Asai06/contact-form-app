@@ -31,7 +31,7 @@ class TagController extends Controller
     {
         Tag::create($request->validated());
 
-        return redirect()->route('admin');
+        return redirect()->route('admin.index');
     }
 
     /**
@@ -57,7 +57,7 @@ class TagController extends Controller
     {
         $tag->update($request->validated());
 
-        return redirect()->route('admin');
+        return redirect()->route('admin.index');
     }
 
     /**
@@ -67,6 +67,6 @@ class TagController extends Controller
     {
         $tag->delete();
 
-        return redirect()->route('admin');
+        return redirect()->route('admin.index');
     }
 }

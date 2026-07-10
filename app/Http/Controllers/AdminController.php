@@ -71,6 +71,6 @@ class AdminController extends Controller
         $contact->delete();
 
         return redirect()
-            ->route('admin');
+            ->route('admin.index');
     }
 }
