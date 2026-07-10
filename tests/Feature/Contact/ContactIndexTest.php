@@ -35,7 +35,7 @@ class ContactIndexTest extends TestCase
 
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('contact.index');
         $response->assertViewHas('categories');
         $response->assertViewHas('tags');
@@ -63,7 +63,7 @@ class ContactIndexTest extends TestCase
             $data
         );
 
-        $response->assertStatus(200);
+        $response->assertOk();
 
         $response->assertViewIs('contact.confirm');
         $contactInformation = [
@@ -87,7 +87,7 @@ class ContactIndexTest extends TestCase
     {
         $response = $this->get('/contact/thanks');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('contact.thanks');
     }
 }
