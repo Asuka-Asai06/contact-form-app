@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class ContactSearchRequestTest extends TestCase
+class IndexContactRequestTest extends TestCase
 {
     use RefreshDatabase;
 
