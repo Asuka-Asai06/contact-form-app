@@ -28,7 +28,7 @@ class ContactSearchRequestTest extends TestCase
             'keyword' => str_repeat('あ', 255),
         ]);
 
-        $this->assertFalse($validator->fails());
+        $this->assertTrue($validator->passes());
     }
 
     public function test_キーワードが256文字以上ならエラーになる(): void
@@ -37,7 +37,7 @@ class ContactSearchRequestTest extends TestCase
             'keyword' => str_repeat('あ', 256),
         ]);
 
-        $this->assertTrue($validator->fails());
+        $this->assertFalse($validator->passes());
 
         $this->assertArrayHasKey(
             'keyword',
@@ -51,7 +51,7 @@ class ContactSearchRequestTest extends TestCase
             'gender' => 1,
         ]);
 
-        $this->assertFalse($validator->fails());
+        $this->assertTrue($validator->passes());
     }
 
     public function test_不正な性別値を拒否する(): void
@@ -60,7 +60,7 @@ class ContactSearchRequestTest extends TestCase
             'gender' => 99,
         ]);
 
-        $this->assertTrue($validator->fails());
+        $this->assertFalse($validator->passes());
 
         $this->assertArrayHasKey(
             'gender',
@@ -78,12 +78,12 @@ class ContactSearchRequestTest extends TestCase
             'category_id' => $category->id,
         ]);
 
-        $this->assertFalse($validator->fails());
+        $this->assertTrue($validator->passes());
     }
 
     public function test_存在しないカテゴリを拒否する(): void
     {
-        $category = Category::create([
+        Category::create([
             'content' => '商品のお届けについて',
         ]);
 
@@ -91,7 +91,7 @@ class ContactSearchRequestTest extends TestCase
             'category_id' => 999999,
         ]);
 
-        $this->assertTrue($validator->fails());
+        $this->assertFalse($validator->passes());
 
         $this->assertArrayHasKey(
             'category_id',
@@ -105,7 +105,7 @@ class ContactSearchRequestTest extends TestCase
             'date' => now()->format('Y-m-d'),
         ]);
 
-        $this->assertFalse($validator->fails());
+        $this->assertTrue($validator->passes());
     }
 
     public function test_不正な日付を拒否する(): void
@@ -114,7 +114,7 @@ class ContactSearchRequestTest extends TestCase
             'date' => '2026/99/99',
         ]);
 
-        $this->assertTrue($validator->fails());
+        $this->assertFalse($validator->passes());
 
         $this->assertArrayHasKey(
             'date',
