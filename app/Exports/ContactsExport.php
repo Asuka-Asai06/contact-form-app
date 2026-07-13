@@ -13,6 +13,11 @@ class ContactsExport implements FromCollection, WithCustomCsvSettings, WithHeadi
         private array $filters
     ) {}
 
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
     public function collection()
     {
         return Contact::with([
