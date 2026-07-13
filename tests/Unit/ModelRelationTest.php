@@ -62,27 +62,15 @@ class ModelRelationTest extends TestCase
 
     public function test_お問い合わせに複数のタグを関連付けられる()
     {
-        $contact = Contact::factory()->create([
-            'category_id' => $this->category->id,
-        ]);
+        Tag::factory()->count(3)->create();
 
-        $tags = Tag::factory()
-            ->count(3)
-            ->create();
+        $contact = Contact::factory()
+            ->withTags(3)
+            ->create([
+                'category_id' => $this->category->id,
+            ]);
 
-        $contact->tags()->sync($tags->pluck('id'));
-
-        $contact->refresh();
-
-        $contactTags = $contact->tags;
-
-        $this->assertCount(3, $contactTags);
-
-        foreach ($tags as $tag) {
-            $this->assertTrue(
-                $contactTags->contains($tag)
-            );
-        }
+        $this->assertCount(3, $contact->fresh()->tags);
     }
 
     public function test_タグから複数のお問い合わせを取得できる()
@@ -92,26 +80,16 @@ class ModelRelationTest extends TestCase
         $contacts = Contact::factory()
             ->count(3)
             ->create([
-                'category_id' => Category::create([
-                    'content' => '商品のお届けについて',
-                ])->id,
+                'category_id' => $this->category->id,
             ]);
 
-        foreach ($contacts as $contact) {
-            $contact->tags()->sync([
-                $tag->id,
-            ]);
-        }
+        $contacts->each(
+            fn ($contact) => $contact->tags()->attach($tag)
+        );
 
-        $tag->refresh();
-        $tagContacts = $tag->contacts;
-
-        $this->assertCount(3, $tagContacts);
-
-        foreach ($contacts as $contact) {
-            $this->assertTrue(
-                $tagContacts->contains($contact)
-            );
-        }
+        $this->assertCount(
+            3,
+            $tag->fresh()->contacts
+        );
     }
 }

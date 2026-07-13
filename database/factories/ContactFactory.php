@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Contact;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,5 +28,19 @@ class ContactFactory extends Factory
             'building' => fake()->optional()->secondaryAddress(),
             'detail' => fake()->realText(50),
         ];
+    }
+
+    public function withTags(int $count = 2): static
+    {
+        return $this->afterCreating(function (Contact $contact) use ($count) {
+
+            $tagIds = Tag::query()
+                ->limit($count)
+                ->pluck('id');
+
+            if ($tagIds->isNotEmpty()) {
+                $contact->tags()->attach($tagIds);
+            }
+        });
     }
 }

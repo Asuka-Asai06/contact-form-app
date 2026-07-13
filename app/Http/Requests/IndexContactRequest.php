@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IndexContactRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class IndexContactRequest extends FormRequest
 
             'gender' => [
                 'nullable',
-                'in:0,1,2,3',
+                'integer',
+                Rule::in([1, 2, 3]),
             ],
 
             'category_id' => [
@@ -40,6 +42,14 @@ class IndexContactRequest extends FormRequest
                 'nullable',
                 'date',
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'gender.in' => '性別値が不正です',
+            'category_id.exists' => '選択されたカテゴリーが存在しません',
         ];
     }
 }
