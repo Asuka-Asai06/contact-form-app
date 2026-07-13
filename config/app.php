@@ -7,6 +7,8 @@ use App\Providers\FortifyServiceProvider;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
+use Maatwebsite\Excel\ExcelServiceProvider;
+use Maatwebsite\Excel\Facades\Excel;
 
 return [
 
@@ -174,6 +176,7 @@ return [
         EventServiceProvider::class,
         RouteServiceProvider::class,
         FortifyServiceProvider::class,
+        ExcelServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -189,6 +192,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Excel' => Excel::class,
     ])->toArray(),
 
 ];

@@ -132,6 +132,7 @@ http://localhost/register
 - PHP 8.5.4
 - Laravel10.4
 - Laravel Fortify（認証機能）
+- Laravel Excel
 - MySQL 8.0
 
 ### フロントエンド

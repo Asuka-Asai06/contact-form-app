@@ -9,6 +9,7 @@ Route::get('/', [ContactController::class, 'index'])->name('contacts.index');
 Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contacts.confirm');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contact/thanks', [ContactController::class, 'thanks'])->name('contacts.thanks');
+Route::get('/contacts/export', [ContactController::class, 'export'])->name('contacts.export');
 
 Route::middleware('auth')
     ->prefix('admin')
