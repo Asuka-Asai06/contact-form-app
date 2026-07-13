@@ -25,11 +25,11 @@ class ContactController extends Controller
             $validated = $request->validated();
 
             $contact = Contact::create(
-                collect($validated)->except('tags')->all()
+                collect($validated)->except('tag_ids')->all()
             );
 
             $contact->tags()->sync(
-                $validated['tags'] ?? []
+                $validated['tag_ids'] ?? []
             );
         });
 

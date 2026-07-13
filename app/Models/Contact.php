@@ -23,9 +23,9 @@ class Contact extends Model
         'detail',
     ];
 
-    public function getPriorityLabelAttribute(): string
+    public function getGenderLabelAttribute(): string
     {
-        return match ($this->priority) {
+        return match ($this->gender) {
             1 => '男性',
             2 => '女性',
             3 => 'その他',

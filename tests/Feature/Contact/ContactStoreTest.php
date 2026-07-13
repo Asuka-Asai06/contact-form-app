@@ -38,7 +38,7 @@ class ContactStoreTest extends TestCase
         $data = array_merge(
             $contact->toArray(),
             [
-                'tags' => [$tag->id],
+                'tag_ids' => [$tag->id],
             ]
         );
 
@@ -61,10 +61,7 @@ class ContactStoreTest extends TestCase
             'detail' => $contact->detail,
         ]);
 
-        $savedContact = Contact::firstWhere(
-            'email',
-            $contact->email
-        );
+        $savedContact = Contact::first();
 
         $this->assertNotNull($savedContact);
 
@@ -72,6 +69,9 @@ class ContactStoreTest extends TestCase
             'contact_id' => $savedContact->id,
             'tag_id' => $tag->id,
         ]);
+        $this->assertTrue(
+            $savedContact->tags->contains('id', $tag->id)
+        );
     }
 
     public function test_姓が255文字を超える場合はバリデーションエラーになる()
