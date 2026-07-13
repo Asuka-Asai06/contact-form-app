@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,6 +33,17 @@ class IndexContactRequest extends FormRequest
                 'nullable',
                 'date',
             ],
+            'per_page' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
+            'page' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
         ];
     }
 
@@ -40,6 +51,7 @@ class IndexContactRequest extends FormRequest
     {
         return [
             'gender.in' => '性別値が不正です',
+            'gender.integer' => '性別の形式が不正です',
             'category_id.exists' => '選択されたカテゴリーが存在しません',
         ];
     }

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Requests;
 
-use App\Http\Requests\StoreContactRequest;
+use App\Http\Requests\Api\V1\StoreContactRequest;
 use App\Models\Category;
 use App\Models\Tag;
 use Database\Seeders\CategorySeeder;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class StoreContactRequestTest extends TestCase
+class ApiStoreRequestTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,12 +22,7 @@ class StoreContactRequestTest extends TestCase
 
         $this->seed(CategorySeeder::class);
 
-        $category = Category::firstWhere(
-            'content',
-            '商品のお届けについて'
-        );
-
-        $this->categoryId = $category->id;
+        $this->categoryId = Category::first()->id;
     }
 
     private function validator(array $data)
@@ -84,11 +79,11 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_姓が255文字を超える場合エラーになる(): void
+    public function test_存在しないタグ_idは拒否する(): void
     {
         $data = $this->validData();
 
-        $data['first_name'] = str_repeat('あ', 256);
+        $data['tag_ids'] = [99999];
 
         $validator = $this->validator($data);
 
@@ -97,48 +92,12 @@ class StoreContactRequestTest extends TestCase
         );
 
         $this->assertArrayHasKey(
-            'first_name',
+            'tag_ids.0',
             $validator->errors()->toArray()
         );
     }
 
-    public function test_性別が不正な値の場合エラーになる(): void
-    {
-        $data = $this->validData();
-
-        $data['gender'] = 99;
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'gender',
-            $validator->errors()->toArray()
-        );
-    }
-
-    public function test_性別が未入力の場合エラーになる(): void
-    {
-        $data = $this->validData();
-
-        unset($data['gender']);
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'gender',
-            $validator->errors()->toArray()
-        );
-    }
-
-    public function test_email形式が不正な場合エラーになる(): void
+    public function test_不正なメール形式は拒否する(): void
     {
         $data = $this->validData();
 
@@ -156,7 +115,43 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_電話番号形式が不正な場合エラーになる(): void
+    public function test_メール未入力は拒否する(): void
+    {
+        $data = $this->validData();
+
+        $data['email'] = null;
+
+        $validator = $this->validator($data);
+
+        $this->assertFalse(
+            $validator->passes()
+        );
+
+        $this->assertArrayHasKey(
+            'email',
+            $validator->errors()->toArray()
+        );
+    }
+
+    public function test_不正な性別値は拒否する(): void
+    {
+        $data = $this->validData();
+
+        $data['gender'] = 99;
+
+        $validator = $this->validator($data);
+
+        $this->assertFalse(
+            $validator->passes()
+        );
+
+        $this->assertArrayHasKey(
+            'gender',
+            $validator->errors()->toArray()
+        );
+    }
+
+    public function test_不正な電話番号形式は拒否する(): void
     {
         $data = $this->validData();
 
@@ -174,7 +169,7 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_存在しないカテゴリーの場合エラーになる(): void
+    public function test_存在しないカテゴリーidは拒否する(): void
     {
         $data = $this->validData();
 
@@ -192,7 +187,7 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_問い合わせ内容が120文字を超える場合エラーになる(): void
+    public function test_問い合わせ内容が120文字を超える場合は拒否する(): void
     {
         $data = $this->validData();
 

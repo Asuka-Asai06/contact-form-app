@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -43,6 +43,10 @@ class UpdateContactRequest extends FormRequest
             'detail.required' => 'お問い合わせ内容を入力してください',
             'detail.max' => 'お問い合わせ内容は120文字以内で入力してください',
 
+            'tel.regex' => '電話番号はハイフンなしの10〜11桁で入力してください',
+            'gender.in' => '性別の値が不正です',
+            'category_id.exists' => '選択されたカテゴリーが存在しません',
+            'tag_ids.*.exists' => '選択されたタグが存在しません',
         ];
     }
 }
