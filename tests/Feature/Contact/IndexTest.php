@@ -8,7 +8,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ContactIndexTest extends TestCase
+class IndexTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -26,7 +26,7 @@ class ContactIndexTest extends TestCase
         );
     }
 
-    public function test_お問い合わせフォームが表示される()
+    public function test_お問い合わせフォームが表示される(): void
     {
 
         Tag::create([
@@ -43,7 +43,7 @@ class ContactIndexTest extends TestCase
         $response->assertSee('質問');
     }
 
-    public function test_問い合わせ確認ページを表示できる()
+    public function test_問い合わせ確認ページを表示できる(): void
     {
 
         $data = [
@@ -83,7 +83,28 @@ class ContactIndexTest extends TestCase
         }
     }
 
-    public function test_サンクスページが表示される()
+    public function test_必須項目不足の場合は確認画面へ進めない(): void
+    {
+        $response = $this->post(
+            route('contacts.confirm'),
+            []
+        );
+
+        $response->assertRedirect();
+
+        $response->assertSessionHasErrors([
+            'category_id',
+            'first_name',
+            'last_name',
+            'gender',
+            'email',
+            'tel',
+            'address',
+            'detail',
+        ]);
+    }
+
+    public function test_サンクスページが表示される(): void
     {
         $response = $this->get('/contact/thanks');
 

@@ -9,7 +9,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ContactStoreTest extends TestCase
+class StoreTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -27,7 +27,7 @@ class ContactStoreTest extends TestCase
         );
     }
 
-    public function test_問い合わせ送信時に問い合わせとタグが保存される()
+    public function test_問い合わせ送信時に問い合わせとタグが保存される(): void
     {
         $tag = Tag::factory()->create();
 
@@ -53,7 +53,9 @@ class ContactStoreTest extends TestCase
             $data
         );
 
-        $response->assertRedirect();
+        $response->assertRedirect(
+            route('contacts.thanks')
+        );
 
         $this->assertDatabaseHas('contacts', [
             'category_id' => $contact->category_id,
@@ -80,7 +82,7 @@ class ContactStoreTest extends TestCase
         );
     }
 
-    public function test_入力値が不正な場合はバリデーションエラーになる()
+    public function test_入力値が不正な場合はバリデーションエラーになる(): void
     {
         $contact = Contact::factory()->make([
             'category_id' => $this->category->id,
@@ -92,7 +94,7 @@ class ContactStoreTest extends TestCase
             $contact->toArray()
         );
 
-        $response->assertStatus(302);
+        $response->assertRedirect();
 
         $response->assertSessionHasErrors([
             'first_name',

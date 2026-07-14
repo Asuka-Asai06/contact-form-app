@@ -9,7 +9,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ApiContactReadTest extends TestCase
+class ContactIndexTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -30,7 +30,7 @@ class ApiContactReadTest extends TestCase
             ->create();
     }
 
-    public function test_問い合わせ一覧を_json形式で取得できる(): void
+    public function test_問い合わせ一覧をjson形式で取得できる(): void
     {
         Contact::factory()->count(3)->withTags()
             ->create([
@@ -64,42 +64,6 @@ class ApiContactReadTest extends TestCase
         ]);
     }
 
-    public function test_問い合わせ詳細を_json形式で取得できる(): void
-    {
-        $contact = Contact::factory()
-            ->withTags()
-            ->create([
-                'category_id' => $this->category->id,
-            ]);
-
-        $response = $this->getJson("/api/v1/contacts/{$contact->id}");
-
-        $response->assertStatus(200);
-
-        $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'first_name',
-                'last_name',
-                'gender',
-                'email',
-                'tel',
-                'address',
-                'building',
-                'category',
-                'tags',
-                'detail',
-                'created_at',
-                'updated_at',
-            ],
-        ]);
-
-        $response->assertJsonPath(
-            'data.id',
-            $contact->id
-        );
-    }
-
     public function test_キーワード検索ができる()
     {
         Contact::factory()->create([
@@ -123,28 +87,6 @@ class ApiContactReadTest extends TestCase
             'data.0.first_name',
             '山田'
         );
-    }
-
-    public function 存在しない問い合わせで404エラーを返す(): void
-    {
-        $response = $this->getJson('/api/v1/contacts/99999');
-
-        $response->assertNotFound();
-    }
-
-    public function test_検索キーワードが255文字を超える場合422を返す(): void
-    {
-        $keyword = str_repeat('a', 256);
-
-        $response = $this->getJson(
-            "/api/v1/contacts?keyword={$keyword}"
-        );
-
-        $response->assertStatus(422);
-
-        $response->assertJsonValidationErrors([
-            'keyword',
-        ]);
     }
 
     public function test_ページネーションが機能する(): void
@@ -182,5 +124,20 @@ class ApiContactReadTest extends TestCase
             'meta.last_page',
             3
         );
+    }
+
+    public function test_検索キーワードが256文字以上の場合は422エラーになる(): void
+    {
+        $keyword = str_repeat('a', 256);
+
+        $response = $this->getJson(
+            "/api/v1/contacts?keyword={$keyword}"
+        );
+
+        $response->assertStatus(422);
+
+        $response->assertJsonValidationErrors([
+            'keyword',
+        ]);
     }
 }

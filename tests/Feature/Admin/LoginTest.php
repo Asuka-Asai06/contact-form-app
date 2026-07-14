@@ -6,11 +6,11 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminLoginTest extends TestCase
+class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_管理者ユーザーがログインできる()
+    public function test_管理者ユーザーがログインできる(): void
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -29,7 +29,7 @@ class AdminLoginTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    public function test_パスワードが異なるとログインに失敗する()
+    public function test_パスワードが異なるとログインに失敗する(): void
     {
         User::factory()->create([
             'email' => 'test@example.com',
@@ -48,7 +48,7 @@ class AdminLoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_emailが存在しないとログインに失敗する()
+    public function test_emailが存在しないとログインに失敗する(): void
     {
         User::factory()->create([
             'email' => 'test@example.com',
@@ -67,7 +67,7 @@ class AdminLoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_ログアウトができる()
+    public function test_ログアウトができる(): void
     {
         $user = User::factory()->create();
 

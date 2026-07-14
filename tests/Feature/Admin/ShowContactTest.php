@@ -9,7 +9,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminIndexTest extends TestCase
+class ShowContactTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -36,22 +36,7 @@ class AdminIndexTest extends TestCase
         );
     }
 
-    public function test_認証ユーザーは管理ダッシュボードを表示できる()
-    {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->get('/admin')
-            ->assertOk();
-    }
-
-    public function test_未認証ユーザーはログイン画面へリダイレクトされる()
-    {
-        $this->get('/admin')
-            ->assertRedirect('/login');
-    }
-
-    public function test_問い合わせ詳細を表示できる()
+    public function test_認証ユーザーは問い合わせ詳細を表示できる(): void
     {
         $user = User::factory()->create();
 
@@ -59,7 +44,12 @@ class AdminIndexTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get("/admin/contacts/{$contact->id}");
+            ->get(
+                route(
+                    'admin.contacts.show',
+                    $contact
+                )
+            );
 
         $response->assertOk();
 
@@ -73,20 +63,33 @@ class AdminIndexTest extends TestCase
         );
     }
 
-    public function test_問い合わせを削除できる()
+    public function test_未認証ユーザーは問い合わせ詳細を表示できない(): void
+    {
+        $contact = $this->createContact();
+
+        $response = $this->get(
+            route(
+                'admin.contacts.show',
+                $contact
+            )
+        );
+
+        $response->assertRedirect('/login');
+    }
+
+    public function test_存在しない問い合わせの場合404エラーになる(): void
     {
         $user = User::factory()->create();
 
-        $contact = $this->createContact();
-
         $response = $this
             ->actingAs($user)
-            ->delete("/admin/contacts/{$contact->id}");
+            ->get(
+                route(
+                    'admin.contacts.show',
+                    99999
+                )
+            );
 
-        $response->assertRedirect('/admin');
-
-        $this->assertDatabaseMissing('contacts', [
-            'id' => $contact->id,
-        ]);
+        $response->assertNotFound();
     }
 }

@@ -20,7 +20,7 @@ class IndexContactRequest extends FormRequest
             'gender' => [
                 'nullable',
                 'integer',
-                Rule::in([1, 2, 3]),
+                Rule::in([0, 1, 2, 3]),
             ],
 
             'category_id' => [
