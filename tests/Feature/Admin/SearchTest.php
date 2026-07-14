@@ -9,7 +9,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminSearchTest extends TestCase
+class ContactSearchTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -36,7 +36,7 @@ class AdminSearchTest extends TestCase
         );
     }
 
-    public function test_キーワード検索ができる()
+    public function test_キーワード検索ができる(): void
     {
         $user = User::factory()->create();
 
@@ -64,7 +64,7 @@ class AdminSearchTest extends TestCase
         );
     }
 
-    public function test_性別フィルタが機能する()
+    public function test_性別フィルタが機能する(): void
     {
         $user = User::factory()->create();
 
@@ -91,7 +91,7 @@ class AdminSearchTest extends TestCase
         );
     }
 
-    public function test_カテゴリフィルタが機能する()
+    public function test_カテゴリフィルタが機能する(): void
     {
         $user = User::factory()->create();
 
@@ -125,7 +125,7 @@ class AdminSearchTest extends TestCase
         );
     }
 
-    public function test_日付フィルタが機能する()
+    public function test_日付フィルタが機能する(): void
     {
         $this->createContact([
             'created_at' => now()->subDay(),
@@ -153,7 +153,7 @@ class AdminSearchTest extends TestCase
         );
     }
 
-    public function test_一覧は7件ごとにページネーションされる()
+    public function test_一覧は7件ごとにページネーションされる(): void
     {
         $user = User::factory()->create();
 

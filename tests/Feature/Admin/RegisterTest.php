@@ -6,11 +6,11 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminRegisterTest extends TestCase
+class RegisterTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_管理者ユーザーが登録できる()
+    public function test_管理者ユーザーが登録できる(): void
     {
         $data = [
             'name' => 'Test User',
@@ -31,7 +31,7 @@ class AdminRegisterTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    public function test_名前が未入力だとバリデーションエラーになる()
+    public function test_名前が未入力の場合はエラーになる(): void
     {
         $data = [
             'email' => 'test@example.com',
@@ -44,7 +44,7 @@ class AdminRegisterTest extends TestCase
         $response->assertSessionHasErrors(['name']);
     }
 
-    public function test_名前が256文字以上だとバリデーションエラーになる()
+    public function test_名前が256文字以上の場合はエラーになる(): void
     {
         $data = [
             'name' => str_repeat('あ', 256),
@@ -58,7 +58,7 @@ class AdminRegisterTest extends TestCase
         $response->assertSessionHasErrors(['name']);
     }
 
-    public function test_email形式が不正な場合はバリデーションエラーになる()
+    public function test_email形式が不正な場合はエラーになる(): void
     {
         $data = [
             'name' => 'Test User',
@@ -72,7 +72,7 @@ class AdminRegisterTest extends TestCase
         $response->assertSessionHasErrors(['email']);
     }
 
-    public function test_emailが256字以上はバリデーションエラーになる()
+    public function test_emailが256文字以上の場合はエラーになる(): void
     {
         $data = [
             'name' => 'Test User',
@@ -86,7 +86,7 @@ class AdminRegisterTest extends TestCase
         $response->assertSessionHasErrors(['email']);
     }
 
-    public function test_emailが重複している場合は登録できない(): void
+    public function test_emailが重複している場合はエラーになる(): void
     {
         User::factory()->create([
             'email' => 'test@example.com',
@@ -104,7 +104,7 @@ class AdminRegisterTest extends TestCase
         $this->assertDatabaseCount('users', 1);
     }
 
-    public function test_パスワードと確認用パスワードが不一致だとバリデーションエラーになる()
+    public function test_パスワードと確認用パスワードが不一致の場合はエラーになる(): void
     {
         $data = [
             'name' => 'Test User',

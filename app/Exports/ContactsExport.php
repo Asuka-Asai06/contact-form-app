@@ -25,6 +25,7 @@ class ContactsExport implements FromCollection, WithCustomCsvSettings, WithHeadi
             'tags',
         ])
             ->filter($this->filters)
+            ->latest()
             ->get()
             ->map(function ($contact) {
                 return [

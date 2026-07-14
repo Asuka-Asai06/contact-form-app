@@ -7,11 +7,11 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminTagTest extends TestCase
+class TagTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_認証ユーザーはタグ編集画面を表示できる()
+    public function test_認証ユーザーはタグ編集画面を表示できる(): void
     {
         $user = User::factory()->create();
 
@@ -25,7 +25,7 @@ class AdminTagTest extends TestCase
             ->assertViewHas('tag');
     }
 
-    public function test_認証ユーザーはタグを作成できる()
+    public function test_認証ユーザーはタグを作成できる(): void
     {
         $user = User::factory()->create();
 
@@ -46,7 +46,7 @@ class AdminTagTest extends TestCase
         ]);
     }
 
-    public function test_認証ユーザーはタグを更新できる()
+    public function test_認証ユーザーはタグを更新できる(): void
     {
         $user = User::factory()->create();
 
@@ -72,7 +72,7 @@ class AdminTagTest extends TestCase
         ]);
     }
 
-    public function test_認証ユーザーはタグを削除できる()
+    public function test_認証ユーザーはタグを削除できる(): void
     {
         $user = User::factory()->create();
 
@@ -92,7 +92,7 @@ class AdminTagTest extends TestCase
         ]);
     }
 
-    public function test_未認証ユーザーはタグ編集画面へアクセスできない()
+    public function test_未認証ユーザーはタグ編集画面へアクセスできない(): void
     {
         $tag = Tag::factory()->create();
 
@@ -101,7 +101,7 @@ class AdminTagTest extends TestCase
         )->assertRedirect('/login');
     }
 
-    public function test_未認証ユーザーはタグを作成できない()
+    public function test_未認証ユーザーはタグを作成できない(): void
     {
         $this->post(
             route('admin.tags.store'),
@@ -115,7 +115,7 @@ class AdminTagTest extends TestCase
         ]);
     }
 
-    public function test_未認証ユーザーはタグを更新できない()
+    public function test_未認証ユーザーはタグを更新できない(): void
     {
         $tag = Tag::factory()->create([
             'name' => '更新前',
@@ -134,7 +134,7 @@ class AdminTagTest extends TestCase
         ]);
     }
 
-    public function test_未認証ユーザーはタグを削除できない()
+    public function test_未認証ユーザーはタグを削除できない(): void
     {
         $tag = Tag::factory()->create();
 
@@ -145,5 +145,29 @@ class AdminTagTest extends TestCase
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
         ]);
+    }
+
+    public function test_タグ名が未入力の場合は登録できない(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(
+                route('admin.tags.store'),
+                [
+                    'name' => '',
+                ]
+            );
+
+        $response->assertSessionHasErrors([
+            'name',
+        ]);
+
+        $this->assertDatabaseMissing(
+            'tags',
+            [
+                'name' => '',
+            ]
+        );
     }
 }

@@ -24,7 +24,7 @@ class UpdateTagRequestTest extends TestCase
         );
     }
 
-    public function test_タグ名が50文字以内なら更新できる(): void
+    public function test_タグ名が50文字の場合はバリデーションを通過する(): void
     {
         $tag = Tag::factory()->create();
 
@@ -35,7 +35,7 @@ class UpdateTagRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_タグ名が空ならエラーになる(): void
+    public function test_タグ名が未入力の場合はバリデーションエラーになる(): void
     {
         $tag = Tag::factory()->create();
 
@@ -51,7 +51,7 @@ class UpdateTagRequestTest extends TestCase
         );
     }
 
-    public function test_タグ名が51文字以上ならエラーになる(): void
+    public function test_タグ名が51文字以上の場合はバリデーションエラーになる(): void
     {
         $tag = Tag::factory()->create();
 
@@ -67,7 +67,7 @@ class UpdateTagRequestTest extends TestCase
         );
     }
 
-    public function test_他のタグ名と重複している場合はエラーになる(): void
+    public function test_他のタグ名と重複している場合はバリデーションエラーになる(): void
     {
         $currentTag = Tag::factory()->create([
             'name' => 'PHP',
@@ -82,9 +82,13 @@ class UpdateTagRequestTest extends TestCase
         ], $currentTag);
 
         $this->assertFalse($validator->passes());
+
+        $this->assertTrue(
+            $validator->errors()->has('name')
+        );
     }
 
-    public function test_自身のタグ名と同じ場合は更新できる(): void
+    public function test_自身のタグ名と同じ場合はバリデーションを通過する(): void
     {
         $tag = Tag::factory()->create([
             'name' => 'Laravel',

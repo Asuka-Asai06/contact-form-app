@@ -22,7 +22,7 @@ class StoreTagRequestTest extends TestCase
         );
     }
 
-    public function test_タグ名が50文字以内なら登録できる(): void
+    public function test_タグ名が50文字ならバリデーションを通過する(): void
     {
         $validator = $this->validator([
             'name' => str_repeat('あ', 50),
@@ -31,7 +31,7 @@ class StoreTagRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_タグ名が空ならエラーになる(): void
+    public function test_タグ名が空の場合はバリデーションエラーになる(): void
     {
         $validator = $this->validator([
             'name' => '',
@@ -41,7 +41,7 @@ class StoreTagRequestTest extends TestCase
         $this->assertArrayHasKey('name', $validator->errors()->toArray());
     }
 
-    public function test_タグ名が51文字以上ならエラーになる(): void
+    public function test_タグ名が51文字以上の場合はバリデーションエラーになる(): void
     {
         $validator = $this->validator([
             'name' => str_repeat('あ', 51),
@@ -51,7 +51,7 @@ class StoreTagRequestTest extends TestCase
         $this->assertArrayHasKey('name', $validator->errors()->toArray());
     }
 
-    public function test_タグ名が重複している場合はエラーになる(): void
+    public function test_タグ名が重複している場合はバリデーションエラーになる(): void
     {
         Tag::factory()->create([
             'name' => 'Laravel',

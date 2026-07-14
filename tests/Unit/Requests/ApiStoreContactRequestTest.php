@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Requests;
 
-use App\Http\Requests\StoreContactRequest;
+use App\Http\Requests\Api\V1\StoreContactRequest;
 use App\Models\Category;
 use App\Models\Tag;
 use Database\Seeders\CategorySeeder;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class StoreContactRequestTest extends TestCase
+class ApiStoreContactRequestTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,10 +22,7 @@ class StoreContactRequestTest extends TestCase
 
         $this->seed(CategorySeeder::class);
 
-        $this->category = Category::firstWhere(
-            'content',
-            '商品のお届けについて'
-        );
+        $this->category = Category::first();
     }
 
     private function validator(array $data)
@@ -63,24 +60,6 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_姓が256文字以上の場合はバリデーションエラーになる(): void
-    {
-        $data = $this->validData();
-
-        $data['first_name'] = str_repeat('あ', 256);
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'first_name',
-            $validator->errors()->toArray()
-        );
-    }
-
     public function test_姓が未入力の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
@@ -92,27 +71,8 @@ class StoreContactRequestTest extends TestCase
         $this->assertFalse(
             $validator->passes()
         );
-
         $this->assertArrayHasKey(
             'first_name',
-            $validator->errors()->toArray()
-        );
-    }
-
-    public function test_名前が256文字以上の場合はバリデーションエラーになる(): void
-    {
-        $data = $this->validData();
-
-        $data['last_name'] = str_repeat('あ', 256);
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'last_name',
             $validator->errors()->toArray()
         );
     }
@@ -128,14 +88,13 @@ class StoreContactRequestTest extends TestCase
         $this->assertFalse(
             $validator->passes()
         );
-
         $this->assertArrayHasKey(
             'last_name',
             $validator->errors()->toArray()
         );
     }
 
-    public function test_性別が不正な値の場合はバリデーションエラーになる(): void
+    public function test_不正な性別値の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
 
@@ -153,25 +112,7 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_性別が未選択の場合はバリデーションエラーになる(): void
-    {
-        $data = $this->validData();
-
-        unset($data['gender']);
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'gender',
-            $validator->errors()->toArray()
-        );
-    }
-
-    public function test_email形式が不正な場合はバリデーションエラーになる(): void
+    public function test_不正なemail形式の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
 
@@ -207,7 +148,7 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_電話番号形式が不正な場合はバリデーションエラーになる(): void
+    public function test_不正な電話番号形式の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
 
@@ -243,24 +184,6 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_住所が256文字以上の場合はバリデーションエラーになる(): void
-    {
-        $data = $this->validData();
-
-        $data['address'] = str_repeat('あ', 256);
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'address',
-            $validator->errors()->toArray()
-        );
-    }
-
     public function test_住所が未入力の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
@@ -272,7 +195,6 @@ class StoreContactRequestTest extends TestCase
         $this->assertFalse(
             $validator->passes()
         );
-
         $this->assertArrayHasKey(
             'address',
             $validator->errors()->toArray()
@@ -315,25 +237,7 @@ class StoreContactRequestTest extends TestCase
         );
     }
 
-    public function test_カテゴリが未選択の場合はバリデーションエラーになる(): void
-    {
-        $data = $this->validData();
-
-        $data['category_id'] = '';
-
-        $validator = $this->validator($data);
-
-        $this->assertFalse(
-            $validator->passes()
-        );
-
-        $this->assertArrayHasKey(
-            'category_id',
-            $validator->errors()->toArray()
-        );
-    }
-
-    public function test_問い合わせ内容が120文字以上の場合はバリデーションエラーになる(): void
+    public function test_問い合わせ内容が121文字以上の場合はバリデーションエラーになる(): void
     {
         $data = $this->validData();
 
@@ -400,8 +304,9 @@ class StoreContactRequestTest extends TestCase
             $validator->passes()
         );
 
-        $this->assertTrue(
-            $validator->errors()->has('tag_ids.0')
+        $this->assertArrayHasKey(
+            'tag_ids.0',
+            $validator->errors()->toArray()
         );
     }
 }

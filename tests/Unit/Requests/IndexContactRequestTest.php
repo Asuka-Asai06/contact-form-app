@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Requests;
 
 use App\Http\Requests\IndexContactRequest;
 use App\Models\Category;
@@ -31,7 +31,7 @@ class IndexContactRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_キーワードが256文字以上ならエラーになる(): void
+    public function test_キーワードが256文字以上の場合はバリデーションエラーになる(): void
     {
         $validator = $this->validator([
             'keyword' => str_repeat('あ', 256),
@@ -54,7 +54,7 @@ class IndexContactRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_不正な性別値を拒否する(): void
+    public function test_不正な性別値の場合はバリデーションエラーになる(): void
     {
         $validator = $this->validator([
             'gender' => 99,
@@ -81,7 +81,7 @@ class IndexContactRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_存在しないカテゴリを拒否する(): void
+    public function test_存在しないカテゴリの場合はバリデーションエラーになる(): void
     {
         Category::create([
             'content' => '商品のお届けについて',
@@ -108,7 +108,7 @@ class IndexContactRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_不正な日付を拒否する(): void
+    public function test_不正な日付の場合はバリデーションエラーになる(): void
     {
         $validator = $this->validator([
             'date' => '2026/99/99',

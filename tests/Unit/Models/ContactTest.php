@@ -8,7 +8,7 @@ use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ModelRelationTest extends TestCase
+class ContactTest extends TestCase
 {
     use RefreshDatabase;
 
