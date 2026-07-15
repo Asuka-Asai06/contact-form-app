@@ -70,8 +70,13 @@ git clone https://github.com/Asuka-Asai06/contact-form-app.git contact-form-app
 ```
 cd contact-form-app
 ```
+3. Composer用イメージをビルド  
+PHP 8.4・GD拡張を含むComposer実行専用イメージです。
+```
+docker build -t contact-composer -f Dockerfile.composer .
+```
 
-3. Composerパッケージをインストール
+4. Composerパッケージをインストール
 ```
 docker run --rm \
 	-u "$(id -u):$(id -g)" \
@@ -82,22 +87,22 @@ docker run --rm \
 	composer install
 ```
 
-4. 環境設定ファイルをコピー
+5. 環境設定ファイルをコピー
 ```
 cp .env.example .env
 ```
 
-5. Sailを起動
+6. Sailを起動
 ```
 ./vendor/bin/sail up -d
 ```
 
-6. アプリケーションキーを生成
+7. アプリケーションキーを生成
 ```
 ./vendor/bin/sail artisan key:generate
 ```
 
-7. データベースを構築  
+8. データベースを構築  
 マイグレーションを実行します。  
 ```
 ./vendor/bin/sail artisan migrate
