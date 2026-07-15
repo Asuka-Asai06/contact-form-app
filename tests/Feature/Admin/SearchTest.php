@@ -9,7 +9,7 @@ use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ContactSearchTest extends TestCase
+class SearchTest extends TestCase
 {
     use RefreshDatabase;
 

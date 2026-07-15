@@ -57,6 +57,9 @@ erDiagram
 ## 環境構築手順
 
 ### バックエンドのセットアップ
+#### 前提環境
+- Docker Desktop
+
 1. リポジトリを取得  
 任意のディレクトリでリポジトリをクローンします。
 ```
@@ -71,12 +74,12 @@ cd contact-form-app
 3. Composerパッケージをインストール
 ```
 docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
-    laravelsail/php82-composer:latest \
-    composer install
+	-u "$(id -u):$(id -g)" \
+	-v "$(pwd):/var/www/html" \
+	-w /var/www/html \
+	-e COMPOSER_CACHE_DIR=/tmp/composer_cache \
+	laravelsail/php84-composer:latest \
+	composer install
 ```
 
 4. 環境設定ファイルをコピー
@@ -129,7 +132,7 @@ http://localhost/register
 
 ## 使用技術
 ### バックエンド
-- PHP 8.5.4
+- PHP 8.4
 - Laravel10.4
 - Laravel Fortify（認証機能）
 - Laravel Excel

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Scopes;
+namespace Tests\Unit\Scope;
 
 use App\Models\Category;
 use App\Models\Contact;
